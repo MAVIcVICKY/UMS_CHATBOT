@@ -1,0 +1,148 @@
+{
+  "schedule": [
+    {
+      "day": "Monday",
+      "time": "01-02 PM",
+      "type": "Tutorial",
+      "course_code": "PEV301",
+      "room": "37-606",
+      "section": "K23BR"
+    },
+    {
+      "day": "Monday",
+      "time": "02-03 PM",
+      "type": "Tutorial",
+      "course_code": "PEV301",
+      "room": "37-606",
+      "section": "K23BR"
+    },
+    {
+      "day": "Monday",
+      "time": "04-05 PM",
+      "type": "Lecture",
+      "course_code": "INT374",
+      "room": "37-606",
+      "section": "K23BR"
+    },
+    {
+      "day": "Monday",
+      "time": "05-06 PM",
+      "type": "Lecture",
+      "course_code": "INT374",
+      "room": "37-606",
+      "section": "K23BR"
+    },
+    {
+      "day": "Tuesday",
+      "time": "01-02 PM",
+      "type": "Lecture",
+      "course_code": "FIN214",
+      "room": "37-711",
+      "section": "KO055"
+    },
+    {
+      "day": "Tuesday",
+      "time": "02-03 PM",
+      "type": "Lecture",
+      "course_code": "INT234",
+      "room": "37-606",
+      "section": "K23BR"
+    },
+    {
+      "day": "Tuesday",
+      "time": "04-05 PM",
+      "type": "Lecture",
+      "course_code": "PEV301",
+      "room": "37-606",
+      "section": "K23BR"
+    },
+    {
+      "day": "Tuesday",
+      "time": "05-06 PM",
+      "type": "Lecture",
+      "course_code": "INT234",
+      "room": "26-103",
+      "section": "K23BR"
+    },
+    {
+      "day": "Wednesday",
+      "time": "01-02 PM",
+      "type": "Lecture",
+      "course_code": "FIN214",
+      "room": "37-711",
+      "section": "KO055"
+    },
+    {
+      "day": "Wednesday",
+      "time": "02-03 PM",
+      "type": "Lecture",
+      "course_code": "PEV301",
+      "room": "37-603",
+      "section": "K23BR"
+    },
+    {
+      "day": "Wednesday",
+      "time": "04-05 PM",
+      "type": "Practical",
+      "course_code": "INT374",
+      "room": "37-601",
+      "section": "K23BR"
+    },
+    {
+      "day": "Wednesday",
+      "time": "05-06 PM",
+      "type": "Practical",
+      "course_code": "INT374",
+      "room": "37-601",
+      "section": "K23BR"
+    },
+    {
+      "day": "Thursday",
+      "time": "10-11 AM",
+      "type": "Lecture",
+      "course_code": "PEAS05",
+      "room": "34-103",
+      "section": "9R915"
+    },
+    {
+      "day": "Thursday",
+      "time": "11-12 AM",
+      "type": "Lecture",
+      "course_code": "PEAS05",
+      "room": "34-103",
+      "section": "9R915"
+    },
+    {
+      "day": "Thursday",
+      "time": "01-02 PM",
+      "type": "Lecture",
+      "course_code": "FIN214",
+      "room": "37-711",
+      "section": "KO055"
+    },
+    {
+      "day": "Thursday",
+      "time": "04-05 PM",
+      "type": "Lecture",
+      "course_code": "INT234",
+      "room": "26-103",
+      "section": "K23BR"
+    },
+    {
+      "day": "Friday",
+      "time": "03-04 PM",
+      "type": "Practical",
+      "course_code": "INT234",
+      "room": "37-606",
+      "section": "K23BR"
+    },
+    {
+      "day": "Friday",
+      "time": "04-05 PM",
+      "type": "Practical",
+      "course_code": "INT234",
+      "room": "37-606",
+      "section": "K23BR"
+    }
+  ]
+}

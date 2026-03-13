@@ -1,0 +1,442 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LPU UMS - AI Assistant</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(135deg, #f4f6f9 0%, #e0eafc 100%);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: #333;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* HEADER */
+        .ums-header {
+            background: #ffffff;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            z-index: 100;
+            border-bottom: 5px solid #f47920;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .ums-logo-text {
+            font-size: 28px;
+            font-weight: 800;
+            color: #000;
+            letter-spacing: -1px;
+        }
+
+        .ums-logo-text span {
+            color: #f47920;
+        }
+
+        .sub-text {
+            font-size: 11px;
+            color: #666;
+            margin-top: -3px;
+            font-weight: 500;
+        }
+
+        /* MAIN LAYOUT */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: 25px;
+            overflow-y: auto;
+            display: flex;
+            gap: 25px;
+        }
+
+        /* CHAT CARD */
+        .chat-card {
+            flex: 2;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            max-width: 900px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .card-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            border-top: 5px solid #f47920;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #fafafa;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            padding: 12px 18px;
+            border-radius: 12px;
+            max-width: 85%;
+            font-size: 14px;
+            line-height: 1.5;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            animation: slideIn 0.3s ease-out forwards;
+        }
+
+        .user-message {
+            background: #f47920;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+
+        .bot-message {
+            background: #ffffff;
+            color: #333;
+            align-self: flex-start;
+            border: 1px solid #eee;
+            border-bottom-left-radius: 2px;
+        }
+
+        .bot-message strong {
+            color: #d35400;
+        }
+
+        .bot-message h3 {
+            font-size: 16px;
+            margin: 10px 0 5px 0;
+            color: #333;
+        }
+
+        .bot-message ul {
+            margin-left: 20px;
+            margin-bottom: 10px;
+        }
+
+        .chat-input-area {
+            padding: 15px 20px;
+            background: #fff;
+            border-top: 1px solid #f0f0f0;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .input-group {
+            flex: 1;
+            display: flex;
+            background: #f5f5f5;
+            border: 1px solid #e0e0e0;
+            border-radius: 25px;
+            padding: 8px 15px;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .input-group:focus-within {
+            border-color: #f47920;
+            background: #fff;
+            box-shadow: 0 0 0 3px rgba(244, 121, 32, 0.1);
+        }
+
+        .chat-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            outline: none;
+            font-size: 14px;
+            color: #333;
+            margin-left: 8px;
+        }
+
+        .chat-input::placeholder {
+            color: #999;
+        }
+
+        .send-btn {
+            background: #f47920;
+            color: white;
+            border: none;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.2s, background 0.2s;
+            font-size: 18px;
+        }
+
+        .send-btn:hover {
+            transform: scale(1.05);
+            background: #e67e22;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header -->
+    <div class="ums-header">
+        <div class="logo-section">
+            <img src="{% static 'lpu_logo.png' %}" alt="LPU Logo"
+                style="height: 50px; width: 50px; object-fit: contain; margin-right: 2px;">
+            <div class="ums-logo-text"><span>U</span>MS</div>
+            <div style="display:flex; flex-direction:column; margin-left:5px;">
+                <span style="font-weight:800; font-size:15px; color:#222;">UNIVERSITY MANAGEMENT SYSTEM</span>
+                <span class="sub-text">AI ASSISTANT PORTAL</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <div class="content-area">
+
+            <!-- CHAT AREA -->
+            <div class="chat-card">
+                <div class="card-header">
+                    <div class="card-title">LPU CHATBOT</div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message bot-message">
+                        <strong>JARVIS:</strong> Hello! I am your University AI Assistant. Ask me about admissions,
+                        fees, courses, placements, hostel, or exams.
+                    </div>
+                </div>
+
+                <div class="chat-input-area">
+                    <div class="input-group">
+                        <span style="color:#aaa; font-size:16px;">🔍</span>
+                        <input type="text" class="chat-input" id="chatInput" placeholder="Type your query..."
+                            onkeydown="if(event.key==='Enter') sendMessage()">
+                    </div>
+                    <button class="send-btn" onclick="sendMessage()">➤</button>
+                </div>
+            </div>
+
+            <!-- RIGHT PANEL - THREE.JS PARTICLE SPHERE -->
+            <div
+                style="flex:1; background:#fff; border-radius:8px; box-shadow:0 4px 15px rgba(0,0,0,0.05); position:relative; overflow:hidden; border-top:5px solid #f47920; display:flex; align-items:center; justify-content:center; min-width:300px;">
+                <div id="canvas-container" style="width:100%; height:100%; position:absolute; top:0; left:0;"></div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // =====================================================
+        // THREE.JS PARTICLE SPHERE
+        // =====================================================
+
+        let scene, camera, renderer, particles;
+
+        function initThreeJS() {
+            const container = document.getElementById('canvas-container');
+            if (!container) return;
+
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+            camera.position.z = 2.5;
+
+            renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+            renderer.setSize(container.clientWidth, container.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            container.appendChild(renderer.domElement);
+
+            const count = 2000;
+            const geometry = new THREE.BufferGeometry();
+            const positions = new Float32Array(count * 3);
+            const colors = new Float32Array(count * 3);
+            const color = new THREE.Color(0xd67419);
+
+            for (let i = 0; i < count; i++) {
+                const phi = Math.acos(-1 + (2 * i) / count);
+                const theta = Math.sqrt(count * Math.PI) * phi;
+
+                positions[i * 3] = Math.cos(theta) * Math.sin(phi);
+                positions[i * 3 + 1] = Math.sin(theta) * Math.sin(phi);
+                positions[i * 3 + 2] = Math.cos(phi);
+
+                colors[i * 3] = color.r;
+                colors[i * 3 + 1] = color.g;
+                colors[i * 3 + 2] = color.b;
+            }
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+            const material = new THREE.PointsMaterial({
+                size: 0.015,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.8,
+                blending: THREE.AdditiveBlending
+            });
+
+            particles = new THREE.Points(geometry, material);
+            scene.add(particles);
+
+            window.addEventListener('resize', function () {
+                if (!container || !camera || !renderer) return;
+                camera.aspect = container.clientWidth / container.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(container.clientWidth, container.clientHeight);
+            });
+
+            animate();
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            if (particles) {
+                particles.rotation.y += 0.003;
+                particles.rotation.x += 0.001;
+            }
+            if (renderer && scene && camera) {
+                renderer.render(scene, camera);
+            }
+        }
+
+        window.addEventListener('load', initThreeJS);
+
+        // =====================================================
+        // CHAT LOGIC
+        // =====================================================
+
+        async function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const question = input.value.trim();
+            if (!question) return;
+
+            addMessage(question, 'user');
+            input.value = '';
+
+            const container = document.getElementById('chatMessages');
+            const botDiv = document.createElement('div');
+            botDiv.className = 'message bot-message';
+            botDiv.innerHTML = '<em>Thinking...</em>';
+            container.appendChild(botDiv);
+            container.scrollTop = container.scrollHeight;
+
+            try {
+                const res = await fetch('/api/chat/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query: question })
+                });
+
+                if (!res.ok) throw new Error('Server returned ' + res.status);
+
+                const data = await res.json();
+                const fullText = data.answer || 'No answer received.';
+
+                // Typing animation
+                let displayed = '';
+                botDiv.innerHTML = '';
+
+                const typeNext = () => {
+                    if (displayed.length < fullText.length) {
+                        displayed += fullText.charAt(displayed.length);
+                        botDiv.innerHTML = marked.parse(displayed);
+                        container.scrollTop = container.scrollHeight;
+                        setTimeout(typeNext, (fullText.length - displayed.length) > 50 ? 5 : 20);
+                    }
+                };
+                typeNext();
+
+            } catch (err) {
+                botDiv.innerHTML = '❌ Error: ' + err.message;
+            }
+        }
+
+        function addMessage(text, type) {
+            const container = document.getElementById('chatMessages');
+            const div = document.createElement('div');
+            div.className = 'message ' + type + '-message';
+            div.textContent = text;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+    </script>
+
+</body>
+
+</html>

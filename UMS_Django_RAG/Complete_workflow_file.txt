@@ -1,0 +1,900 @@
+================================================================================
+         COMPLETE WORKFLOW — UMS DJANGO RAG CHATBOT PROJECT
+================================================================================
+Project Name   : UMS Django RAG Chatbot
+Author         : V
+Date Started   : 21 February 2026
+Tech Stack     : Python, Django 6.0.2, Django REST Framework
+IDE            : VS Code (with Gemini AI assistant)
+OS             : Windows
+================================================================================
+
+
+================================================================================
+                        TABLE OF CONTENTS
+================================================================================
+  1.  Project Overview
+  2.  Task 1  — Create Project Folder
+  3.  Task 2  — Create Virtual Environment
+  4.  Task 3  — Install Required Packages
+  5.  Task 4  — Create Django Project
+  6.  Task 5  — Create Chatbot App
+  7.  Task 6  — Register App in Settings
+  8.  Task 7  — Run Server (Initial Check)
+  9.  Task 8  — Create Basic Chat API View
+  10. Task 9  — Create URL File for Chatbot App
+  11. Task 10 — Connect App URLs to Project
+  12. Task 11 — Test the API
+  13. Final Project Structure
+  14. Key Concepts Explained
+  15. What's Next
+================================================================================
+
+
+================================================================================
+1. PROJECT OVERVIEW
+================================================================================
+
+This project is a Django-based REST API backend for a UMS (University Management
+System) chatbot. The goal is to build a chatbot that can answer student queries
+about the university using RAG (Retrieval-Augmented Generation) techniques.
+
+In this initial phase, we:
+  - Set up the Django project from scratch.
+  - Installed Django REST Framework for building APIs.
+  - Created a basic chatbot app with a POST endpoint.
+  - Tested the API to confirm everything is wired correctly.
+
+This forms the foundation on which we will later integrate:
+  - A knowledge base (PDF/text documents about the university).
+  - An embedding model (to convert text into vectors).
+  - A vector database (like FAISS or ChromaDB) for similarity search.
+  - An LLM (like Google Gemini or OpenAI GPT) for generating answers.
+  - Text-to-Speech (like Deepgram) for voice-based interaction.
+
+
+================================================================================
+2. TASK 1 — CREATE PROJECT FOLDER
+================================================================================
+
+PURPOSE:
+  Every project needs its own isolated folder. This keeps all project files
+  (code, virtual environment, data, configs) organized in one place.
+
+WHAT WE DID:
+  - Opened a terminal in the workspace directory:
+      c:\Users\V\OneDrive\Desktop\LPU_RAG_UMS
+
+  - Created a new folder called "UMS_Django_RAG":
+
+      COMMAND:
+      ─────────────────────────────────────────────────────────
+      mkdir UMS_Django_RAG
+      ─────────────────────────────────────────────────────────
+
+  - This created the directory:
+      c:\Users\V\OneDrive\Desktop\LPU_RAG_UMS\UMS_Django_RAG\
+
+WHY THIS NAME?
+  - UMS        → University Management System (the domain)
+  - Django     → The web framework we're using
+  - RAG        → Retrieval-Augmented Generation (the AI technique)
+
+RESULT:
+  ✅ Empty folder "UMS_Django_RAG" created successfully.
+
+
+================================================================================
+3. TASK 2 — CREATE VIRTUAL ENVIRONMENT
+================================================================================
+
+PURPOSE:
+  A virtual environment (venv) is an isolated Python environment. It ensures
+  that the packages we install for THIS project don't interfere with other
+  Python projects on the system, and vice versa.
+
+  Without a venv, installing Django for this project could conflict with a
+  different Django version required by another project.
+
+WHAT WE DID:
+  - Navigated into the project folder:
+      c:\Users\V\OneDrive\Desktop\LPU_RAG_UMS\UMS_Django_RAG
+
+  - Created the virtual environment:
+
+      COMMAND:
+      ─────────────────────────────────────────────────────────
+      python -m venv venv
+      ─────────────────────────────────────────────────────────
+
+      BREAKDOWN:
+        python -m venv  → Tells Python to run the built-in "venv" module
+        venv            → Name of the folder to store the virtual environment
+
+  - This created a "venv" folder inside UMS_Django_RAG with:
+      venv/
+        Scripts/        → Contains activate.bat, python.exe, pip.exe (Windows)
+        Lib/            → Where installed packages will live
+        pyvenv.cfg      → Configuration file
+
+  - Activated the virtual environment:
+
+      COMMAND (Windows):
+      ─────────────────────────────────────────────────────────
+      venv\Scripts\activate
+      ─────────────────────────────────────────────────────────
+
+  - After activation, the terminal prompt changed to show "(venv)" at the
+    beginning, confirming we are now working inside the virtual environment.
+
+      BEFORE:  PS C:\Users\V\...\UMS_Django_RAG>
+      AFTER:   (venv) PS C:\Users\V\...\UMS_Django_RAG>
+
+RESULT:
+  ✅ Virtual environment created and activated.
+  ✅ "(venv)" visible in terminal prompt.
+
+
+================================================================================
+4. TASK 3 — INSTALL REQUIRED PACKAGES
+================================================================================
+
+PURPOSE:
+  We need two key Python packages:
+    1. Django              → The web framework to build the backend server
+    2. djangorestframework → Extension that makes it easy to build REST APIs
+
+WHAT WE DID:
+  - With the virtual environment activated, we ran:
+
+      COMMAND:
+      ─────────────────────────────────────────────────────────
+      pip install django djangorestframework
+      ─────────────────────────────────────────────────────────
+
+      BREAKDOWN:
+        pip install        → Python's package installer
+        django             → Installs Django and its dependencies
+        djangorestframework → Installs DRF (Django REST Framework)
+
+  - pip downloaded and installed the packages along with their dependencies:
+      - Django 6.0.2
+      - djangorestframework (latest compatible version)
+      - asgiref, sqlparse (Django dependencies)
+
+  - Verified the installation by checking the Django version:
+
+      COMMAND:
+      ─────────────────────────────────────────────────────────
+      django-admin --version
+      ─────────────────────────────────────────────────────────
+
+      OUTPUT:
+      ─────────────────────────────────────────────────────────
+      6.0.2
+      ─────────────────────────────────────────────────────────
+
+WHAT IS DJANGO?
+  Django is a high-level Python web framework that encourages rapid development
+  and clean, pragmatic design. It follows the MVT (Model-View-Template) pattern
+  and comes with built-in features like:
+    - ORM (Object-Relational Mapping) for database operations
+    - Admin panel for managing data
+    - URL routing system
+    - Authentication system
+    - Security features (CSRF protection, SQL injection prevention, etc.)
+
+WHAT IS DJANGO REST FRAMEWORK (DRF)?
+  DRF is a powerful toolkit built on top of Django for building Web APIs. It
+  provides:
+    - Serializers (converting complex data to JSON and back)
+    - API Views and ViewSets
+    - Authentication & permissions for APIs
+    - Browsable API (a web interface to test your API)
+    - Throttling, pagination, filtering
+
+RESULT:
+  ✅ Django 6.0.2 installed.
+  ✅ Django REST Framework installed.
+  ✅ Version verified.
+
+
+================================================================================
+5. TASK 4 — CREATE DJANGO PROJECT
+================================================================================
+
+PURPOSE:
+  A Django "project" is the top-level container that holds configuration and
+  settings for the entire web application. It's the skeleton of the application.
+
+WHAT WE DID:
+  - Ran the Django project creation command:
+
+      COMMAND:
+      ─────────────────────────────────────────────────────────
+      django-admin startproject ums_chatbot
+      ─────────────────────────────────────────────────────────
+
+      BREAKDOWN:
+        django-admin      → Django's command-line utility
+        startproject      → Command to create a new project
+        ums_chatbot       → Name of our project
+
+  - This created the following structure:
+
+      UMS_Django_RAG/
+      ├── venv/                          (virtual environment - already existed)
+      └── ums_chatbot/                   (NEW — outer project folder)
+          ├── manage.py                  (Django management script)
+          └── ums_chatbot/               (inner project config folder)
+              ├── __init__.py            (marks this as a Python package)
+              ├── settings.py            (all project settings & configuration)
+              ├── urls.py                (project-level URL routing)
+              ├── wsgi.py                (WSGI entry point for deployment)
+              └── asgi.py                (ASGI entry point for async deployment)
+
+FILE EXPLANATIONS:
+
+  manage.py:
+    - The command center for the Django project.
+    - Used to run the dev server, create apps, run migrations, etc.
+    - Example: python manage.py runserver
+
+  settings.py:
+    - Contains ALL configuration for the project.
+    - Database settings, installed apps, middleware, templates, static files,
+      security keys, timezone, etc.
+    - This is the file we modify most during setup.
+
+  urls.py:
+    - The "table of contents" for the website/API.
+    - Maps URL patterns to views (the code that handles requests).
+    - Example: path('api/', include('chatbot.urls'))
+
+  wsgi.py / asgi.py:
+    - Entry points for web servers in production.
+    - WSGI = Web Server Gateway Interface (synchronous)
+    - ASGI = Asynchronous Server Gateway Interface (supports WebSockets, etc.)
+    - We don't modify these during development.
+
+RESULT:
+  ✅ Django project "ums_chatbot" created successfully.
+
+
+================================================================================
+6. TASK 5 — CREATE CHATBOT APP
+================================================================================
+
+PURPOSE:
+  In Django, a "project" contains multiple "apps". Each app is a self-contained
+  module that handles a specific piece of functionality. This modular design
+  makes the code organized, reusable, and maintainable.
+
+  Our "chatbot" app will handle all chatbot-related logic:
+    - Receiving user queries
+    - Processing them (later: through RAG pipeline)
+    - Returning responses
+
+WHAT WE DID:
+  - Changed directory into the Django project:
+      cd ums_chatbot
+
+  - Created the chatbot app:
+
+      COMMAND:
+      ─────────────────────────────────────────────────────────
+      python manage.py startapp chatbot
+      ─────────────────────────────────────────────────────────
+
+      BREAKDOWN:
+        python manage.py   → Runs Django's management script
+        startapp           → Command to create a new app
+        chatbot            → Name of the app
+
+  - This created the following structure inside ums_chatbot/:
+
+      ums_chatbot/
+      ├── manage.py
+      ├── ums_chatbot/           (project config)
+      └── chatbot/               (NEW — our chatbot app)
+          ├── __init__.py        (marks as Python package)
+          ├── admin.py           (register models for admin panel)
+          ├── apps.py            (app configuration)
+          ├── models.py          (database models / tables)
+          ├── tests.py           (unit tests)
+          ├── views.py           (request handlers / API logic)
+          └── migrations/        (database migration files)
+              └── __init__.py
+
+FILE EXPLANATIONS:
+
+  views.py:
+    - WHERE THE MAIN LOGIC LIVES.
+    - Contains functions or classes that receive HTTP requests and return
+      HTTP responses.
+    - This is where our ChatView API will be defined.
+
+  models.py:
+    - Defines the database structure using Python classes.
+    - Each class = a database table. Each attribute = a column.
+    - We'll use this later for storing chat history, user data, etc.
+
+  admin.py:
+    - Register models here to make them manageable through Django's built-in
+      admin panel (accessible at /admin/).
+
+  apps.py:
+    - Contains the app's configuration class (ChatbotConfig).
+    - Used by Django to identify and configure the app.
+
+  migrations/:
+    - Auto-generated files that track changes to your database schema.
+    - Created when you run: python manage.py makemigrations
+
+RESULT:
+  ✅ Chatbot app created successfully.
+  ✅ All default app files generated.
+
+
+================================================================================
+7. TASK 6 — REGISTER APP IN SETTINGS
+================================================================================
+
+PURPOSE:
+  Django doesn't automatically know about new apps. We MUST register them in
+  the project's settings.py file under INSTALLED_APPS. Without this step,
+  Django won't load the app's models, URLs, or templates.
+
+WHAT WE DID:
+  - Opened: ums_chatbot/ums_chatbot/settings.py
+
+  - Located the INSTALLED_APPS list (originally):
+
+      INSTALLED_APPS = [
+          'django.contrib.admin',
+          'django.contrib.auth',
+          'django.contrib.contenttypes',
+          'django.contrib.sessions',
+          'django.contrib.messages',
+          'django.contrib.staticfiles',
+      ]
+
+  - Added two new entries:
+
+      INSTALLED_APPS = [
+          'django.contrib.admin',
+          'django.contrib.auth',
+          'django.contrib.contenttypes',
+          'django.contrib.sessions',
+          'django.contrib.messages',
+          'django.contrib.staticfiles',
+          'rest_framework',          ← NEW: Enables Django REST Framework
+          'chatbot',                 ← NEW: Registers our chatbot app
+      ]
+
+  - Saved the file.
+
+WHY 'rest_framework'?
+  This tells Django to load DRF's components (serializers, API views,
+  browsable API, authentication classes, etc.). Without this, DRF features
+  like APIView and Response won't work.
+
+WHY 'chatbot'?
+  This tells Django: "Hey, there's an app called 'chatbot'. Load its models,
+  admin registrations, URL configs, and everything else."
+
+RESULT:
+  ✅ 'rest_framework' registered in INSTALLED_APPS.
+  ✅ 'chatbot' registered in INSTALLED_APPS.
+  ✅ File saved.
+
+
+================================================================================
+8. TASK 7 — RUN SERVER (INITIAL CHECK)
+================================================================================
+
+PURPOSE:
+  Before writing any API code, it's good practice to verify that the basic
+  Django setup is working — no typos in settings, no import errors, and the
+  server can start cleanly.
+
+WHAT WE DID:
+  - Ran the development server:
+
+      COMMAND:
+      ─────────────────────────────────────────────────────────
+      python manage.py runserver
+      ─────────────────────────────────────────────────────────
+
+  - Django started the development server:
+      - Listening on: http://127.0.0.1:8000
+      - 127.0.0.1 = "localhost" = your own computer
+      - Port 8000 = the default Django development port
+
+  - Opened browser and navigated to http://127.0.0.1:8000
+  - The Django default success page appeared with the rocket animation,
+    confirming everything is set up correctly.
+
+  - Stopped the server with CTRL + C.
+
+WHAT HAPPENS BEHIND THE SCENES:
+  1. Django reads settings.py to load configuration.
+  2. It imports all INSTALLED_APPS and checks for errors.
+  3. It sets up the URL routing based on ROOT_URLCONF.
+  4. It starts a lightweight development web server.
+  5. The server listens for incoming HTTP requests on port 8000.
+
+RESULT:
+  ✅ Server started without errors.
+  ✅ Django default page visible at http://127.0.0.1:8000.
+  ✅ Configuration is correct.
+
+
+================================================================================
+9. TASK 8 — CREATE BASIC CHAT API VIEW
+================================================================================
+
+PURPOSE:
+  The "view" is the heart of any Django endpoint. It's the Python function or
+  class that receives an HTTP request and returns an HTTP response. In our case,
+  we're creating a POST API that receives a chat query and returns a response.
+
+WHAT WE DID:
+  - Opened: chatbot/views.py
+
+  - Replaced the default content with:
+
+      ─────────────────────────────────────────────────────────
+      from rest_framework.views import APIView
+      from rest_framework.response import Response
+
+      class ChatView(APIView):
+
+          def post(self, request):
+              query = request.data.get("query")
+              return Response({"message": f"You said: {query}"})
+      ─────────────────────────────────────────────────────────
+
+CODE BREAKDOWN (LINE BY LINE):
+
+  Line 1: from rest_framework.views import APIView
+    - Imports APIView from Django REST Framework.
+    - APIView is a class-based view specifically designed for building APIs.
+    - It provides built-in features like:
+        • Request parsing (JSON, form data, multipart)
+        • Response rendering (JSON output)
+        • Authentication & permission checks
+        • Exception handling
+
+  Line 2: from rest_framework.response import Response
+    - Imports the Response class from DRF.
+    - Response automatically converts Python dicts/lists to JSON format.
+    - It also handles content negotiation (can return JSON, HTML, etc.)
+
+  Line 4: class ChatView(APIView):
+    - Creates a class called ChatView that inherits from APIView.
+    - By inheriting APIView, our class gets all the API functionality.
+    - The class name is descriptive: it's a View for the Chat feature.
+
+  Line 6: def post(self, request):
+    - Defines how to handle HTTP POST requests.
+    - 'self' = reference to the class instance (standard Python OOP).
+    - 'request' = the incoming HTTP request object, containing:
+        • request.data = the parsed body (JSON, form data, etc.)
+        • request.method = "POST"
+        • request.headers = HTTP headers
+        • request.user = the authenticated user (if any)
+
+  Line 7: query = request.data.get("query")
+    - Extracts the "query" field from the request body.
+    - .get("query") safely returns None if "query" is not provided
+      (unlike request.data["query"] which would throw an error).
+    - Example: If body is {"query": "hello"}, then query = "hello"
+
+  Line 8: return Response({"message": f"You said: {query}"})
+    - Returns a JSON response with the echoed message.
+    - f"You said: {query}" is a Python f-string (formatted string).
+    - If query = "hello", response = {"message": "You said: hello"}
+    - DRF's Response class automatically:
+        • Sets Content-Type to application/json
+        • Serializes the dict to JSON
+        • Sets HTTP status code to 200 (OK)
+
+WHY CLASS-BASED VIEW (NOT FUNCTION-BASED)?
+  Django supports both styles:
+    - Function-Based Views (FBVs): Simple functions decorated with @api_view
+    - Class-Based Views (CBVs): Classes that inherit from APIView
+  
+  We chose CBVs because:
+    - Each HTTP method (GET, POST, PUT, DELETE) gets its own method
+    - Easier to extend and maintain as complexity grows
+    - Better organization for the RAG chatbot (we'll add GET, error handling, etc.)
+
+RESULT:
+  ✅ ChatView class created with POST endpoint.
+  ✅ Accepts JSON body with "query" field.
+  ✅ Returns JSON response echoing the query.
+
+
+================================================================================
+10. TASK 9 — CREATE URL FILE FOR CHATBOT APP
+================================================================================
+
+PURPOSE:
+  Django uses a URL routing system to map URLs to views. Each app should have
+  its own urls.py file to keep URL definitions modular and organized.
+
+  This file tells Django: "When someone visits /chat/, send the request to
+  ChatView."
+
+WHAT WE DID:
+  - Created a NEW file: chatbot/urls.py
+    (This file does NOT exist by default — Django doesn't auto-create it
+    for apps. We must create it manually.)
+
+  - Added the following content:
+
+      ─────────────────────────────────────────────────────────
+      from django.urls import path
+      from .views import ChatView
+
+      urlpatterns = [
+          path('chat/', ChatView.as_view()),
+      ]
+      ─────────────────────────────────────────────────────────
+
+CODE BREAKDOWN:
+
+  Line 1: from django.urls import path
+    - Imports Django's path() function for defining URL patterns.
+    - path() takes a URL string and maps it to a view.
+
+  Line 2: from .views import ChatView
+    - Imports our ChatView from the same app's views.py.
+    - The dot (.) means "from the current package" (relative import).
+
+  Lines 4-6: urlpatterns = [...]
+    - urlpatterns is a special variable name that Django looks for.
+    - It must be a list of path() entries.
+
+  Line 5: path('chat/', ChatView.as_view())
+    - 'chat/'        → The URL path (will become /api/chat/ after project
+                        URL inclusion — see Task 10)
+    - ChatView.as_view() → Converts the class-based view into a callable
+                           view function that Django can use.
+    - .as_view() is REQUIRED for class-based views. It:
+        • Creates an instance of the class
+        • Routes the request to the correct method (get, post, put, etc.)
+        • Returns the response
+
+URL ROUTING FLOW:
+  User sends request to: http://127.0.0.1:8000/api/chat/
+    → Django checks project urls.py
+    → Finds path('api/', include('chatbot.urls'))
+    → Strips 'api/' and passes 'chat/' to chatbot/urls.py
+    → Finds path('chat/', ChatView.as_view())
+    → Calls ChatView.post() method
+    → Returns the Response
+
+RESULT:
+  ✅ chatbot/urls.py created.
+  ✅ /chat/ URL mapped to ChatView.
+
+
+================================================================================
+11. TASK 10 — CONNECT APP URLs TO PROJECT
+================================================================================
+
+PURPOSE:
+  The app's urls.py is isolated — Django doesn't know about it yet. We need
+  to connect it to the project's main urls.py using include(). This creates
+  a hierarchy:
+
+    Project urls.py → includes → App urls.py → routes to → Views
+
+  This is like a tree structure:
+    /                          (project root)
+    └── api/                   (defined in project urls.py)
+        └── chat/              (defined in chatbot/urls.py → ChatView)
+
+WHAT WE DID:
+  - Opened: ums_chatbot/ums_chatbot/urls.py
+
+  - Modified it to:
+
+      ─────────────────────────────────────────────────────────
+      from django.urls import path, include
+
+      urlpatterns = [
+          path('api/', include('chatbot.urls')),
+      ]
+      ─────────────────────────────────────────────────────────
+
+CODE BREAKDOWN:
+
+  Line 1: from django.urls import path, include
+    - path   → For defining URL patterns (same as before)
+    - include → For including another URL configuration module
+
+  Line 4: path('api/', include('chatbot.urls'))
+    - 'api/'                   → All chatbot URLs will be prefixed with /api/
+    - include('chatbot.urls')  → Tells Django to look at chatbot/urls.py
+                                  for the rest of the URL matching.
+
+  HOW THE FULL URL IS BUILT:
+    Project prefix:  /api/      (from project urls.py)
+    App path:        chat/      (from chatbot/urls.py)
+    Full URL:        /api/chat/
+
+NOTE:
+  We removed the default admin URL (path('admin/', admin.site.urls)) for now
+  to keep things simple. We can add it back later when we need the admin panel.
+
+RESULT:
+  ✅ Project urls.py updated.
+  ✅ Chatbot app URLs included under /api/ prefix.
+  ✅ Full endpoint: http://127.0.0.1:8000/api/chat/
+
+
+================================================================================
+12. TASK 11 — TEST THE API
+================================================================================
+
+PURPOSE:
+  After building the API, we need to verify it actually works end-to-end.
+  This means sending a real HTTP POST request and checking the response.
+
+WHAT WE DID:
+
+  Step 1: Started the server again:
+
+      COMMAND:
+      ─────────────────────────────────────────────────────────
+      python manage.py runserver
+      ─────────────────────────────────────────────────────────
+
+      Server started at: http://127.0.0.1:8000
+
+  Step 2: Sent a POST request using PowerShell:
+
+      COMMAND:
+      ─────────────────────────────────────────────────────────
+      Invoke-RestMethod -Uri "http://127.0.0.1:8000/api/chat/"
+                        -Method POST
+                        -ContentType "application/json"
+                        -Body '{"query": "hello"}'
+      ─────────────────────────────────────────────────────────
+
+      (You can also use Postman or Thunder Client in VS Code)
+
+  Step 3: Received the response:
+
+      ─────────────────────────────────────────────────────────
+      {
+          "message": "You said: hello"
+      }
+      ─────────────────────────────────────────────────────────
+
+      ✅ The API correctly received the query and echoed it back!
+
+HOW TO TEST WITH POSTMAN:
+  1. Open Postman (or Thunder Client extension in VS Code).
+  2. Set method to POST.
+  3. Enter URL: http://127.0.0.1:8000/api/chat/
+  4. Go to Body tab → select "raw" → select "JSON".
+  5. Enter: {"query": "hello"}
+  6. Click Send.
+  7. You should see: {"message": "You said: hello"}
+
+REQUEST-RESPONSE FLOW (DETAILED):
+  1. Client sends HTTP POST to http://127.0.0.1:8000/api/chat/
+     Headers: Content-Type: application/json
+     Body: {"query": "hello"}
+
+  2. Django receives the request at manage.py's dev server.
+
+  3. Django middleware processes the request:
+     - SecurityMiddleware: Adds security headers
+     - SessionMiddleware: Handles session cookies
+     - CommonMiddleware: Normalizes URLs
+     - CsrfViewMiddleware: CSRF protection (DRF exempts API views)
+     - AuthenticationMiddleware: Sets request.user
+
+  4. Django URL resolver matches the URL:
+     /api/chat/ → project urls.py → chatbot urls.py → ChatView
+
+  5. DRF's APIView processes the request:
+     - Parses the JSON body into request.data
+     - Identifies the HTTP method (POST)
+     - Calls ChatView.post(request)
+
+  6. ChatView.post() executes:
+     - Extracts query = "hello" from request.data
+     - Creates Response({"message": "You said: hello"})
+
+  7. DRF renders the response as JSON.
+
+  8. Django sends the HTTP response back to the client:
+     Status: 200 OK
+     Content-Type: application/json
+     Body: {"message": "You said: hello"}
+
+RESULT:
+  ✅ API endpoint http://127.0.0.1:8000/api/chat/ is fully functional.
+  ✅ POST request with JSON body works correctly.
+  ✅ Response returns properly formatted JSON.
+
+
+================================================================================
+13. FINAL PROJECT STRUCTURE
+================================================================================
+
+  UMS_Django_RAG/
+  │
+  ├── venv/                              [Virtual Environment]
+  │   ├── Scripts/                       Python executables, activate scripts
+  │   ├── Lib/                           Installed packages (django, DRF, etc.)
+  │   └── pyvenv.cfg                     Virtual env configuration
+  │
+  ├── ums_chatbot/                       [Django Project Root]
+  │   │
+  │   ├── manage.py                      Django CLI management script
+  │   │
+  │   ├── ums_chatbot/                   [Project Configuration Package]
+  │   │   ├── __init__.py                Package marker
+  │   │   ├── settings.py               ★ Project settings (apps, DB, etc.)
+  │   │   ├── urls.py                   ★ Project-level URL routing
+  │   │   ├── wsgi.py                    WSGI deployment entry point
+  │   │   └── asgi.py                    ASGI deployment entry point
+  │   │
+  │   └── chatbot/                       [Chatbot App]
+  │       ├── __init__.py                Package marker
+  │       ├── admin.py                   Admin panel registration
+  │       ├── apps.py                    App configuration
+  │       ├── models.py                  Database models (empty for now)
+  │       ├── tests.py                   Unit tests (empty for now)
+  │       ├── views.py                  ★ API view — ChatView class
+  │       ├── urls.py                   ★ App-level URL routing
+  │       └── migrations/                Database migration files
+  │           └── __init__.py
+  │
+  └── Complete_workflow_file.txt         ★ This documentation file
+
+  ★ = Files we created or modified during this setup.
+
+
+================================================================================
+14. KEY CONCEPTS EXPLAINED
+================================================================================
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │ CONCEPT: REST API                                                  │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │ REST = Representational State Transfer                             │
+  │ API  = Application Programming Interface                          │
+  │                                                                    │
+  │ It's a way for two programs to communicate over HTTP.              │
+  │ Our chatbot API allows any client (web app, mobile app, Postman)   │
+  │ to send a query and receive a response — all over HTTP using JSON. │
+  │                                                                    │
+  │ HTTP Methods:                                                      │
+  │   GET    → Retrieve data                                           │
+  │   POST   → Send/create data  ← (we use this for chat queries)     │
+  │   PUT    → Update data                                             │
+  │   DELETE → Remove data                                             │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │ CONCEPT: Django MVT Pattern                                        │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │ Django follows the Model-View-Template (MVT) pattern:              │
+  │                                                                    │
+  │   Model    → Defines data structure (models.py)                    │
+  │   View     → Handles business logic (views.py)                     │
+  │   Template → Renders HTML pages (templates/)                       │
+  │                                                                    │
+  │ For REST APIs, we skip Templates and return JSON instead.          │
+  │ The View is the most important part — it processes requests.       │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │ CONCEPT: Django Project vs App                                     │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │ Project = The entire web application (ums_chatbot)                 │
+  │           Contains settings, main URLs, deployment config.         │
+  │                                                                    │
+  │ App     = A specific feature module (chatbot)                      │
+  │           Contains models, views, URLs for that feature.           │
+  │                                                                    │
+  │ A project can have MANY apps:                                      │
+  │   - chatbot (handles chat queries)                                 │
+  │   - accounts (handles user authentication)                         │
+  │   - analytics (handles usage analytics)                            │
+  │   etc.                                                             │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │ CONCEPT: URL Routing in Django                                     │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │                                                                    │
+  │ User Request: POST /api/chat/                                      │
+  │        │                                                           │
+  │        ▼                                                           │
+  │ ums_chatbot/urls.py                                                │
+  │   path('api/', include('chatbot.urls'))                            │
+  │        │  strips 'api/' → remaining: 'chat/'                       │
+  │        ▼                                                           │
+  │ chatbot/urls.py                                                    │
+  │   path('chat/', ChatView.as_view())                                │
+  │        │  matches 'chat/' → calls ChatView                         │
+  │        ▼                                                           │
+  │ chatbot/views.py                                                   │
+  │   ChatView.post(request) → Response({"message": "..."})           │
+  │                                                                    │
+  └─────────────────────────────────────────────────────────────────────┘
+
+  ┌─────────────────────────────────────────────────────────────────────┐
+  │ CONCEPT: Virtual Environment                                       │
+  ├─────────────────────────────────────────────────────────────────────┤
+  │                                                                    │
+  │ Without venv:                                                      │
+  │   All Python packages install globally → version conflicts!        │
+  │   Project A needs Django 4.2, Project B needs Django 6.0 → CRASH  │
+  │                                                                    │
+  │ With venv:                                                         │
+  │   Each project has its own isolated Python + packages.             │
+  │   Project A has Django 4.2 in its venv.                            │
+  │   Project B has Django 6.0 in its venv.                            │
+  │   No conflicts! ✅                                                 │
+  │                                                                    │
+  └─────────────────────────────────────────────────────────────────────┘
+
+
+================================================================================
+15. WHAT'S NEXT
+================================================================================
+
+Now that the basic Django + DRF foundation is set up, the next steps for
+building the full RAG chatbot will be:
+
+  Phase 2: Knowledge Base Setup
+    □ Collect university documents (PDFs, text files, FAQs)
+    □ Create a data/ directory to store them
+    □ Write a script to extract text from documents
+
+  Phase 3: RAG Pipeline
+    □ Install langchain, sentence-transformers, faiss-cpu (or chromadb)
+    □ Create embeddings from university documents
+    □ Store embeddings in a vector database
+    □ Build a retrieval function to find relevant document chunks
+
+  Phase 4: LLM Integration
+    □ Install google-generativeai (for Gemini) or openai
+    □ Connect the retriever to an LLM
+    □ Modify ChatView to:
+        1. Receive user query
+        2. Search vector DB for relevant context
+        3. Send context + query to LLM
+        4. Return LLM's answer
+
+  Phase 5: Frontend (Optional)
+    □ Create a chat UI using HTML/CSS/JavaScript
+    □ Connect it to the Django API
+    □ Add real-time features (WebSockets)
+
+  Phase 6: Voice Integration (Optional)
+    □ Integrate Deepgram TTS for voice responses
+    □ Add speech-to-text input
+
+  Phase 7: Deployment
+    □ Configure for production (DEBUG=False, allowed hosts, etc.)
+    □ Deploy to a cloud platform (Heroku, Railway, AWS, etc.)
+
+
+================================================================================
+                          END OF WORKFLOW DOCUMENT
+================================================================================
+  Document created: 21 February 2026
+  Last updated:     21 February 2026
+  Status:           Phase 1 Complete ✅
+================================================================================
